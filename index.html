@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sundrop Brands – Travel / General / Business Expense Claim</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.x/dist/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4f8;color:#1a1a2e;min-height:100vh;padding:20px}
+:root{--blue:#003366;--blue-light:#1a5276;--accent:#e8a020;--border:#d0d7e0;--surface:#fff;--surface2:#f7f9fc;--text:#1a1a2e;--muted:#6b7694;--success-bg:#e8f4e8;--success:#1e7b1e;--warn-bg:#fff3cd;--warn:#856404;--err-bg:#fde8e8;--err:#a82020;--radius:8px}
+.apex-shell{background:#fff;border:1px solid var(--border);border-radius:10px;overflow:hidden;max-width:960px;margin:0 auto;box-shadow:0 2px 12px rgba(0,0,0,0.08)}
+.apex-topbar{background:#003366;padding:10px 20px;display:flex;align-items:center;gap:12px}
+.apex-topbar .logo{font-size:13px;font-weight:600;color:#fff;letter-spacing:0.5px}
+.apex-topbar .sep{color:#ffffff44;font-size:18px}
+.apex-topbar .page-title{font-size:13px;color:#c8d8f0}
+.apex-topbar .right{margin-left:auto;display:flex;align-items:center;gap:10px}
+.apex-breadcrumb{background:#f0f4f8;border-bottom:1px solid var(--border);padding:8px 20px;font-size:12px;color:var(--muted);display:flex;gap:6px;align-items:center}
+.apex-body{padding:20px}
+.section-block{background:#fff;border:1px solid var(--border);border-radius:var(--radius);margin-bottom:16px;overflow:hidden}
+.section-header{background:#003366;padding:9px 16px;display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none}
+.section-header span.title{font-size:12px;font-weight:600;color:#fff;letter-spacing:0.3px;text-transform:uppercase}
+.section-header .sub{font-size:10px;color:#a0b8d8;margin-left:6px}
+.section-header .toggle{margin-left:auto;font-size:14px;color:#c8d8f0;transition:transform 0.2s}
+.section-content{padding:16px}
+.section-collapsed .section-content{display:none}
+.section-collapsed .toggle{transform:rotate(180deg)}
+.form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+.form-group{display:flex;flex-direction:column;gap:4px}
+.form-group label{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.4px}
+.form-group label .req{color:#c0392b}
+.form-group input,.form-group select,.form-group textarea{font-size:13px;padding:6px 10px;border:1px solid var(--border);border-radius:var(--radius);background:#fff;color:var(--text);height:34px;outline:none;transition:border 0.15s}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:#003366}
+.form-group textarea{height:60px;resize:vertical}
+.form-group input[readonly]{background:#f7f9fc;color:var(--muted);cursor:default}
+.field-badge{font-size:10px;padding:2px 7px;border-radius:10px;display:inline-flex;align-items:center;gap:3px;margin-top:3px;width:fit-content}
+.badge-auto{background:#e8f4e8;color:#1e7b1e}
+.badge-warn{background:#fff3cd;color:#856404}
+.badge-err{background:#fde8e8;color:#a82020}
+.expense-table-wrap{overflow-x:auto;padding:0 16px}
+.expense-table{width:100%;border-collapse:collapse;font-size:12px;min-width:760px}
+.expense-table th{background:#003366;color:#fff;padding:8px 10px;font-weight:600;text-align:left;font-size:11px;letter-spacing:0.3px;white-space:nowrap}
+.expense-table td{padding:7px 8px;border-bottom:1px solid #edf0f5;vertical-align:middle}
+.expense-table tr:nth-child(even) td{background:#f7f9fc}
+.expense-table tr:last-child td{border-bottom:none}
+.expense-table select,.expense-table input[type="text"],.expense-table input[type="date"],.expense-table input[type="number"]{font-size:12px;padding:4px 7px;border:1px solid var(--border);border-radius:6px;background:#fff;color:var(--text);height:28px;width:100%;outline:none}
+.expense-table select:focus,.expense-table input:focus{border-color:#003366}
+.gl-chip{font-size:10px;background:#e8f0ff;color:#1a3a8a;padding:2px 6px;border-radius:8px;display:inline-block;white-space:nowrap}
+.btn-add-row{font-size:12px;padding:7px 16px;border:1px dashed var(--border);border-radius:var(--radius);background:transparent;color:var(--muted);cursor:pointer;display:flex;align-items:center;gap:6px;margin:10px 16px 0}
+.btn-add-row:hover{background:#f0f4f8}
+.totals-bar{background:#f0f4f8;border-top:1px solid var(--border);padding:14px 16px;display:flex;gap:28px;flex-wrap:wrap;align-items:center}
+.total-item{display:flex;flex-direction:column;gap:2px}
+.total-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.4px}
+.total-value{font-size:16px;font-weight:600;color:var(--text)}
+.total-value.over{color:#c0392b}
+.justification-area{display:none;margin:0 16px 16px;padding:14px;background:#fff8ee;border:1px solid #f0c040;border-radius:var(--radius)}
+.justification-area.show{display:block}
+.justification-area .jlabel{font-size:12px;font-weight:600;color:#7a5000;display:flex;align-items:center;gap:6px;margin-bottom:10px}
+.justification-area select,.justification-area textarea{width:100%;font-size:12px;padding:7px 10px;border:1px solid #f0c040;border-radius:var(--radius);background:#fff;color:var(--text);margin-bottom:8px;outline:none}
+.justification-area .sublabel{font-size:11px;font-weight:600;color:#7a5000;display:block;margin-bottom:4px}
+.workflow-steps{display:flex;overflow-x:auto;gap:0;padding:0 0 8px}
+.wf-step{display:flex;align-items:center;flex:1;min-width:100px}
+.wf-node{display:flex;flex-direction:column;align-items:center;gap:5px;padding:10px 6px;flex:1;text-align:center}
+.wf-icon{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px}
+.wf-icon.active{background:#003366;color:#fff}
+.wf-icon.pending{background:#e8f0ff;color:#1a3a8a}
+.wf-icon.done{background:#d4edda;color:#155724}
+.wf-icon.skip{background:#f0f4f8;color:#b0bcc8}
+.wf-label{font-size:10px;color:var(--muted);line-height:1.3}
+.wf-sub{font-size:9px;color:#b0bcc8}
+.wf-arrow{font-size:16px;color:#c0c8d8;flex-shrink:0}
+.matrix-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px}
+.matrix-card{border:1px solid var(--border);border-radius:var(--radius);padding:10px 14px}
+.matrix-card.active{border-color:#f0c040;background:#fffbee}
+.matrix-title{font-size:11px;font-weight:600;margin-bottom:8px;display:flex;align-items:center;gap:6px;color:#7a5000}
+.matrix-row{display:flex;justify-content:space-between;font-size:11px;padding:4px 0;border-bottom:1px solid #f0f0f0}
+.matrix-row:last-child{border-bottom:none}
+.matrix-row .grade{color:var(--muted)}
+.matrix-row .limit{font-weight:600;color:var(--text)}
+.validation-panel{background:#fffbee;border:1px solid #f0c040;border-radius:var(--radius);padding:14px;margin-bottom:16px;display:none}
+.validation-panel.show{display:block}
+.val-title{font-size:12px;font-weight:600;color:#7a5000;display:flex;align-items:center;gap:6px;margin-bottom:10px}
+.val-item{font-size:12px;display:flex;align-items:flex-start;gap:8px;padding:4px 0;color:var(--text)}
+.val-item i{font-size:14px;flex-shrink:0;margin-top:1px}
+.val-ok i{color:#1e7b1e}
+.val-warn i{color:#a85e00}
+.val-err i{color:#a82020}
+.actions-bar{padding:14px 20px;background:#f0f4f8;border-top:1px solid var(--border);display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.btn{padding:8px 18px;border-radius:var(--radius);font-size:13px;font-weight:500;cursor:pointer;display:inline-flex;align-items:center;gap:6px;border:none;transition:all 0.15s}
+.btn-primary{background:#003366;color:#fff}
+.btn-primary:hover{background:#1a5276}
+.btn-secondary{background:#fff;color:var(--text);border:1px solid var(--border)}
+.btn-secondary:hover{background:#f0f4f8}
+.btn-warning{background:#e8a020;color:#fff}
+.btn-warning:hover{background:#c8880e}
+.btn-danger{background:#a82020;color:#fff}
+.status-pill{font-size:10px;padding:3px 10px;border-radius:10px;font-weight:600}
+.pill-draft{background:#e8f0ff;color:#1a3a8a}
+.pill-saved{background:#d4edda;color:#155724}
+.pill-submitted{background:#fff3cd;color:#856404}
+.hint{font-size:10px;color:var(--muted);margin-top:4px}
+.info-note{font-size:11px;color:var(--muted);background:#f7f9fc;border:1px solid var(--border);border-radius:var(--radius);padding:8px 12px;margin-top:10px;display:flex;align-items:flex-start;gap:6px}
+.info-note i{font-size:14px;flex-shrink:0;margin-top:1px;color:#003366}
+.upload-zone{border:1px dashed var(--border);border-radius:var(--radius);padding:24px;text-align:center;color:var(--muted);font-size:13px;cursor:pointer;background:#f7f9fc;transition:background 0.15s}
+.upload-zone:hover{background:#edf2f8}
+.upload-zone i{font-size:32px;display:block;margin-bottom:8px;color:#b0bcc8}
+@media(max-width:600px){.form-grid{grid-template-columns:1fr 1fr}.matrix-grid{grid-template-columns:1fr}.workflow-steps{flex-direction:column}.wf-step{flex-direction:column}.wf-arrow{transform:rotate(90deg)}}
+@media print{body{background:#fff;padding:0}.actions-bar{display:none}.apex-topbar{-webkit-print-color-adjust:exact;print-color-adjust:exact}.section-header{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+</style>
+</head>
+<body>
+
+<div class="apex-shell">
+
+  <!-- Top Bar -->
+  <div class="apex-topbar">
+    <img src="data:image/png;base64,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" alt="Sundrop Brands" style="height:32px;object-fit:contain;background:#fff;border-radius:4px;padding:2px 6px;flex-shrink:0">
+    <span class="sep" style="color:#ffffff44;font-size:18px">|</span>
+    <span class="logo">Sundrop Brands · HRMS &amp; Finance Suite</span>
+    <span class="sep">|</span>
+    <span class="page-title">Travel / General / Business Expense Claim</span>
+    <div class="right">
+      <span class="status-pill pill-draft" id="statusPill">Draft</span>
+      <span style="font-size:11px;color:#c8d8f0" id="claimNo">EXP-2025-0000</span>
+    </div>
+  </div>
+
+  <!-- Breadcrumb -->
+  <div class="apex-breadcrumb">
+    <i class="ti ti-home"></i> Home
+    <i class="ti ti-chevron-right"></i> Expense Management
+    <i class="ti ti-chevron-right"></i> New Expense Claim
+  </div>
+
+  <div class="apex-body">
+
+    <!-- Validation panel -->
+    <div class="validation-panel" id="validationPanel">
+      <div class="val-title"><i class="ti ti-alert-triangle"></i> Policy Validation Summary</div>
+      <div id="validationItems"></div>
+    </div>
+
+    <!-- SECTION 1: Employee Details -->
+    <div class="section-block" id="sec1">
+      <div class="section-header" onclick="toggleSection('sec1')">
+        <i class="ti ti-user-check" style="color:#c8d8f0"></i>
+        <span class="title">Employee Master Details</span>
+        <span class="sub">Auto-fetched from HRMS</span>
+        <i class="ti ti-chevron-up toggle"></i>
+      </div>
+      <div class="section-content">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Employee ID <span class="req">*</span></label>
+            <select id="empId" onchange="fetchEmployee()">
+              <option value="">— Select Employee —</option>
+              <option value="7275">7275 – Chandra Mouli P</option>
+              <option value="7593">7593 – Anilkumar S</option>
+              <option value="7863">7863 – Sridhar N</option>
+            </select>
+            <span class="field-badge badge-auto"><i class="ti ti-link" style="font-size:11px"></i> HRMS linked</span>
+          </div>
+          <div class="form-group">
+            <label>Employee Name</label>
+            <input type="text" id="empName" readonly placeholder="Auto-fetched">
+            <span class="field-badge badge-auto"><i class="ti ti-robot" style="font-size:11px"></i> System derived</span>
+          </div>
+          <div class="form-group">
+            <label>Designation</label>
+            <input type="text" id="designation" readonly placeholder="Auto-fetched">
+          </div>
+          <div class="form-group">
+            <label>Grade / Level</label>
+            <input type="text" id="grade" readonly placeholder="Auto-fetched">
+          </div>
+          <div class="form-group">
+            <label>Department</label>
+            <input type="text" id="dept" readonly placeholder="Auto-fetched">
+          </div>
+          <div class="form-group">
+            <label>Base Location</label>
+            <input type="text" id="baseLocation" readonly placeholder="Auto-fetched">
+          </div>
+          <div class="form-group">
+            <label>Date of Joining</label>
+            <input type="text" id="doj" readonly placeholder="Auto-fetched">
+          </div>
+          <div class="form-group">
+            <label>Reporting Manager</label>
+            <input type="text" id="reportingMgr" readonly placeholder="Auto-fetched">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 2: Claim Header -->
+    <div class="section-block" id="sec2">
+      <div class="section-header" onclick="toggleSection('sec2')">
+        <i class="ti ti-file-description" style="color:#c8d8f0"></i>
+        <span class="title">Claim Header</span>
+        <i class="ti ti-chevron-up toggle"></i>
+      </div>
+      <div class="section-content">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Claim Type <span class="req">*</span></label>
+            <select id="claimType">
+              <option value="">— Select —</option>
+              <option value="travel">Travel Expense</option>
+              <option value="general">General Expense</option>
+              <option value="business">Business Expense</option>
+              <option value="advance">Advance Settlement</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Trip / Reference Description <span class="req">*</span></label>
+            <input type="text" id="tripDesc" placeholder="e.g. Client Visit – Mumbai Office">
+          </div>
+          <div class="form-group">
+            <label>Travel From Date <span class="req">*</span></label>
+            <input type="date" id="fromDate">
+          </div>
+          <div class="form-group">
+            <label>Travel To Date <span class="req">*</span></label>
+            <input type="date" id="toDate">
+          </div>
+          <div class="form-group">
+            <label>Destination Type <span class="req">*</span></label>
+            <select id="destCity" onchange="updateDestination()">
+              <option value="">— Select —</option>
+              <option value="local">Local (same city)</option>
+              <option value="domestic_metro">Domestic – Metro</option>
+              <option value="domestic_non">Domestic – Non-Metro</option>
+              <option value="international">International</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Destination Name</label>
+            <input type="text" id="destName" placeholder="City / Country name">
+          </div>
+          <div class="form-group">
+            <label>Purpose of Travel <span class="req">*</span></label>
+            <select>
+              <option value="">— Select —</option>
+              <option>Client Meeting</option>
+              <option>Conference / Training</option>
+              <option>Site Inspection</option>
+              <option>Internal Review</option>
+              <option>Business Development</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Cost Centre</label>
+            <input type="text" id="costCentre" readonly placeholder="Auto-derived from dept">
+            <span class="field-badge badge-auto"><i class="ti ti-robot" style="font-size:11px"></i> System derived</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 3: Expense Lines -->
+    <div class="section-block" id="sec3">
+      <div class="section-header" onclick="toggleSection('sec3')">
+        <i class="ti ti-list-details" style="color:#c8d8f0"></i>
+        <span class="title">Expense Line Items</span>
+        <span class="sub">GL auto-derived per type</span>
+        <i class="ti ti-chevron-up toggle"></i>
+      </div>
+      <div class="section-content" style="padding:12px 0 0">
+        <div class="expense-table-wrap">
+          <table class="expense-table" id="expenseTable">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Date</th>
+                <th>Expense Type</th>
+                <th>GL Account (Auto-derived)</th>
+                <th>Description</th>
+                <th>Qty / Days</th>
+                <th>Rate (₹)</th>
+                <th>Amount (₹)</th>
+                <th>Receipt?</th>
+                <th>Policy Status</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="expenseBody"></tbody>
+          </table>
+        </div>
+        <button class="btn-add-row" onclick="addExpenseRow()">
+          <i class="ti ti-plus"></i> Add Expense Line
+        </button>
+
+        <div class="totals-bar" id="totalsBar">
+          <div class="total-item">
+            <div class="total-label">Total Claimed</div>
+            <div class="total-value" id="totalClaimed">₹0</div>
+          </div>
+          <div class="total-item">
+            <div class="total-label">Within Eligibility</div>
+            <div class="total-value" style="color:#1e7b1e" id="totalEligible">₹0</div>
+          </div>
+          <div class="total-item">
+            <div class="total-label">Over Limit (flagged)</div>
+            <div class="total-value over" id="totalOver">₹0</div>
+          </div>
+          <div style="margin-left:auto;text-align:right">
+            <div class="total-label">Net Payable</div>
+            <div style="font-size:22px;font-weight:700;color:#003366" id="netPayable">₹0</div>
+          </div>
+        </div>
+
+        <div class="justification-area" id="justificationArea">
+          <div class="jlabel"><i class="ti ti-alert-triangle"></i> One or more line items exceed policy limits — mandatory justification required</div>
+          <span class="sublabel">Approval Authority <span class="req">*</span></span>
+          <select id="approvalAuthority">
+            <option value="">— Select required approver —</option>
+            <option>Head of Sales</option>
+            <option>Head of HR</option>
+            <option>CFO</option>
+            <option>MD / CEO</option>
+          </select>
+          <span class="sublabel">Business Justification <span class="req">*</span></span>
+          <textarea id="justification" rows="3" placeholder="Explain why this expense exceeds the policy limit and why it was necessary for the business…"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 4: Eligibility Matrix -->
+    <div class="section-block" id="sec4">
+      <div class="section-header" onclick="toggleSection('sec4')">
+        <i class="ti ti-table" style="color:#c8d8f0"></i>
+        <span class="title">Policy Eligibility Matrix</span>
+        <span class="sub">Grade-wise configured limits</span>
+        <i class="ti ti-chevron-up toggle"></i>
+      </div>
+      <div class="section-content">
+        <div id="policyDisplay" style="font-size:12px;color:var(--muted)">
+          Select an employee to view applicable policy limits.
+        </div>
+        <div class="matrix-grid" id="approvalMatrix" style="display:none">
+          <div class="matrix-card active">
+            <div class="matrix-title"><i class="ti ti-home" style="font-size:14px"></i> Hotel Limits (per night)</div>
+            <div class="matrix-row"><span class="grade">Metro</span><span class="limit" id="hotelMetro">—</span></div>
+            <div class="matrix-row"><span class="grade">Non-Metro</span><span class="limit" id="hotelNonMetro">—</span></div>
+            <div class="matrix-row"><span class="grade">International</span><span class="limit" id="hotelIntl">—</span></div>
+          </div>
+          <div class="matrix-card active">
+            <div class="matrix-title"><i class="ti ti-currency-rupee" style="font-size:14px"></i> Daily Allowance (per day)</div>
+            <div class="matrix-row"><span class="grade">Metro</span><span class="limit" id="daMetro">—</span></div>
+            <div class="matrix-row"><span class="grade">Non-Metro</span><span class="limit" id="daNonMetro">—</span></div>
+            <div class="matrix-row"><span class="grade">International</span><span class="limit" id="daIntl">—</span></div>
+          </div>
+          <div class="matrix-card active">
+            <div class="matrix-title"><i class="ti ti-plane" style="font-size:14px"></i> Travel Class Entitlement</div>
+            <div class="matrix-row"><span class="grade">Air Travel</span><span class="limit" id="airClass">—</span></div>
+            <div class="matrix-row"><span class="grade">Rail Travel</span><span class="limit" id="railClass">—</span></div>
+            <div class="matrix-row"><span class="grade">Local Conveyance</span><span class="limit" id="localConv">—</span></div>
+          </div>
+          <div class="matrix-card active">
+            <div class="matrix-title"><i class="ti ti-check-circle" style="font-size:14px"></i> Approval Thresholds</div>
+            <div class="matrix-row"><span class="grade">Auto-approve (within limit)</span><span class="limit" id="autoApprove">—</span></div>
+            <div class="matrix-row"><span class="grade">Mgr + Finance</span><span class="limit" id="mgrFinance">—</span></div>
+            <div class="matrix-row"><span class="grade">CFO override</span><span class="limit" id="cfoOverride">—</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 5: Approval Workflow -->
+    <div class="section-block" id="sec5">
+      <div class="section-header" onclick="toggleSection('sec5')">
+        <i class="ti ti-git-branch" style="color:#c8d8f0"></i>
+        <span class="title">Approval Workflow</span>
+        <span class="sub">Digital maker-checker routing</span>
+        <i class="ti ti-chevron-up toggle"></i>
+      </div>
+      <div class="section-content">
+        <div class="workflow-steps">
+          <div class="wf-step">
+            <div class="wf-node">
+              <div class="wf-icon active"><i class="ti ti-pencil"></i></div>
+              <div class="wf-label">Employee<br>Submission</div>
+              <div class="wf-sub">Maker</div>
+            </div>
+            <div class="wf-arrow"><i class="ti ti-arrow-right"></i></div>
+          </div>
+          <div class="wf-step">
+            <div class="wf-node">
+              <div class="wf-icon pending"><i class="ti ti-user-check"></i></div>
+              <div class="wf-label" id="wfMgrLabel">Reporting Manager</div>
+              <div class="wf-sub">Level 1 Approver</div>
+            </div>
+            <div class="wf-arrow"><i class="ti ti-arrow-right"></i></div>
+          </div>
+          <div class="wf-step" id="wfOverLimit" style="opacity:0.35">
+            <div class="wf-node">
+              <div class="wf-icon skip"><i class="ti ti-crown"></i></div>
+              <div class="wf-label">HOD / CFO</div>
+              <div class="wf-sub">If over-limit</div>
+            </div>
+            <div class="wf-arrow"><i class="ti ti-arrow-right"></i></div>
+          </div>
+          <div class="wf-step">
+            <div class="wf-node">
+              <div class="wf-icon pending"><i class="ti ti-building-bank"></i></div>
+              <div class="wf-label">Finance / AP</div>
+              <div class="wf-sub">Validation only</div>
+            </div>
+            <div class="wf-arrow"><i class="ti ti-arrow-right"></i></div>
+          </div>
+          <div class="wf-step">
+            <div class="wf-node">
+              <div class="wf-icon pending"><i class="ti ti-file-invoice"></i></div>
+              <div class="wf-label">AP Invoice</div>
+              <div class="wf-sub">Auto-created</div>
+            </div>
+            <div class="wf-arrow"><i class="ti ti-arrow-right"></i></div>
+          </div>
+          <div class="wf-step">
+            <div class="wf-node" style="flex:1">
+              <div class="wf-icon pending"><i class="ti ti-cash"></i></div>
+              <div class="wf-label">Payment</div>
+              <div class="wf-sub">Oracle Payables</div>
+            </div>
+          </div>
+        </div>
+        <div class="info-note">
+          <i class="ti ti-info-circle"></i>
+          Once fully approved, the system auto-generates an AP invoice in <strong>"Never Validated"</strong> status via concurrent program. No manual punching required by the AP team.
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 6: Supporting Documents -->
+    <div class="section-block" id="sec6">
+      <div class="section-header" onclick="toggleSection('sec6')">
+        <i class="ti ti-paperclip" style="color:#c8d8f0"></i>
+        <span class="title">Supporting Documents</span>
+        <i class="ti ti-chevron-up toggle"></i>
+      </div>
+      <div class="section-content">
+        <div class="upload-zone" onclick="document.getElementById('fileUpload').click()">
+          <i class="ti ti-upload"></i>
+          Drag &amp; drop receipts, invoices, boarding passes here<br>
+          <span style="font-size:11px">Accepted: PDF, JPG, PNG · Max 5MB per file</span>
+          <div style="margin-top:12px">
+            <button class="btn btn-secondary" type="button">
+              <i class="ti ti-folder-open"></i> Browse Files
+            </button>
+          </div>
+        </div>
+        <input type="file" id="fileUpload" multiple accept=".pdf,.jpg,.jpeg,.png" style="display:none" onchange="handleFiles(this)">
+        <div id="fileList" style="margin-top:10px;font-size:12px;color:var(--muted)"></div>
+        <p class="hint">Receipts are mandatory for all expenses above ₹500. AP will validate originals before payment release.</p>
+      </div>
+    </div>
+
+  </div><!-- end apex-body -->
+
+  <!-- Action Bar -->
+  <div class="actions-bar">
+    <button class="btn btn-secondary" onclick="saveDraft()">
+      <i class="ti ti-device-floppy"></i> Save Draft
+    </button>
+    <button class="btn btn-warning" onclick="validateAndSubmit()">
+      <i class="ti ti-check-circle"></i> Validate &amp; Preview
+    </button>
+    <button class="btn btn-primary" id="submitBtn" onclick="submitClaim()">
+      <i class="ti ti-send"></i> Submit for Approval
+    </button>
+    <button class="btn btn-secondary" style="margin-left:auto" onclick="window.print()">
+      <i class="ti ti-printer"></i> Print Preview
+    </button>
+  </div>
+
+</div><!-- end apex-shell -->
+
+<script>
+const EMP_DATA={
+  7275:{name:'Chandra Mouli P',desig:'Senior Executive IS',grade:'D13 – Sr.Executive IS',dept:'IS',loc:'Hyderabad',doj:'19-Nov-2019',mgr:'Srinivasarao N',costCentre:'RO-HYD',
+    policy:{hotel:{metro:5000,nonMetro:3500,intl:15000},da:{metro:800,nonMetro:600,intl:3000},air:'Business Class',rail:'1A / 2A',local:500,autoApprove:25000,mgrFinance:75000,cfo:200000}},
+  7593:{name:'Anilkumar S',desig:'Sr.Officer IS',grade:'D12 – Sr.Officer',dept:'IS',loc:'Hyderabad',doj:'01-Jun-2021',mgr:'Srinivasarao N',costCentre:'RO-HYD',
+    policy:{hotel:{metro:3000,nonMetro:2000,intl:10000},da:{metro:500,nonMetro:400,intl:2000},air:'Economy Class',rail:'2A / 3A',local:300,autoApprove:10000,mgrFinance:30000,cfo:100000}},
+  7863:{name:'Sridhar N',desig:'Officer IS',grade:'D11 – Officer',dept:'IS',loc:'Hyderabad',doj:'10-Jan-2025',mgr:'Srinivasarao N',costCentre:'RO-HYD',
+    policy:{hotel:{metro:9000,nonMetro:6000,intl:25000},da:{metro:1500,nonMetro:1000,intl:5000},air:'Business Class',rail:'1A / Exec',local:1000,autoApprove:100000,mgrFinance:300000,cfo:999999}}
+};
+
+const GL_MAP={
+  'Hotel / Accommodation':'526010 – Hotel & Lodging',
+  'Daily Allowance (DA)':'526011 – Daily Allowance',
+  'Taxi / Cab Fare':'526012 – Travelling – Local Conveyance',
+  'Auto / Rickshaw':'526012 – Travelling – Local Conveyance',
+  'Air Ticket (Domestic)':'526013 – Air Travel – Domestic',
+  'Air Ticket (International)':'526014 – Air Travel – International',
+  'Train Ticket':'526015 – Rail Travel',
+  'Bus / Ferry':'526016 – Surface Transport',
+  'Car Hire':'526017 – Car Hire Charges',
+  'Fuel / Petrol':'526018 – Vehicle Fuel',
+  'Visa / Passport Fees':'526019 – Visa & Travel Docs',
+  'Meals / Food':'526020 – Business Meals',
+  'Client Entertainment':'526021 – Client Entertainment',
+  'Courier / Postage':'527001 – Courier & Postage',
+  'Stationery':'527002 – Office Stationery',
+  'Printing':'527003 – Printing & Reproduction',
+  'Telephone / Internet':'527010 – Communication Expenses',
+  'Miscellaneous':'529999 – Miscellaneous Expenses'
+};
+
+let rowCount=0, currentEmp=null, hasOverLimit=false;
+
+function fetchEmployee(){
+  const id=document.getElementById('empId').value;
+  if(!id){clearEmployee();return;}
+  const e=EMP_DATA[id];
+  currentEmp=e;
+  document.getElementById('empName').value=e.name;
+  document.getElementById('designation').value=e.desig;
+  document.getElementById('grade').value=e.grade;
+  document.getElementById('dept').value=e.dept;
+  document.getElementById('baseLocation').value=e.loc;
+  document.getElementById('doj').value=e.doj;
+  document.getElementById('reportingMgr').value=e.mgr;
+  document.getElementById('costCentre').value=e.costCentre;
+  document.getElementById('claimNo').textContent='EXP-2025-'+id.replace('E','');
+  document.getElementById('wfMgrLabel').textContent=e.mgr;
+  showPolicyMatrix(e.policy);
+  revalidateAllRows();
+}
+
+function clearEmployee(){
+  ['empName','designation','grade','dept','baseLocation','doj','reportingMgr','costCentre'].forEach(f=>document.getElementById(f).value='');
+  currentEmp=null;
+  document.getElementById('approvalMatrix').style.display='none';
+  document.getElementById('policyDisplay').textContent='Select an employee to view applicable policy limits.';
+  document.getElementById('policyDisplay').style.display='block';
+}
+
+function showPolicyMatrix(p){
+  document.getElementById('policyDisplay').style.display='none';
+  document.getElementById('approvalMatrix').style.display='grid';
+  document.getElementById('hotelMetro').textContent='₹'+p.hotel.metro.toLocaleString('en-IN');
+  document.getElementById('hotelNonMetro').textContent='₹'+p.hotel.nonMetro.toLocaleString('en-IN');
+  document.getElementById('hotelIntl').textContent='₹'+p.hotel.intl.toLocaleString('en-IN');
+  document.getElementById('daMetro').textContent='₹'+p.da.metro.toLocaleString('en-IN');
+  document.getElementById('daNonMetro').textContent='₹'+p.da.nonMetro.toLocaleString('en-IN');
+  document.getElementById('daIntl').textContent='₹'+p.da.intl.toLocaleString('en-IN');
+  document.getElementById('airClass').textContent=p.air;
+  document.getElementById('railClass').textContent=p.rail;
+  document.getElementById('localConv').textContent='₹'+p.local+'/km or actual';
+  document.getElementById('autoApprove').textContent='Up to ₹'+p.autoApprove.toLocaleString('en-IN');
+  document.getElementById('mgrFinance').textContent='₹'+p.autoApprove.toLocaleString('en-IN')+' – ₹'+p.mgrFinance.toLocaleString('en-IN');
+  document.getElementById('cfoOverride').textContent='Above ₹'+p.mgrFinance.toLocaleString('en-IN');
+}
+
+function addExpenseRow(){
+  rowCount++;
+  const tbody=document.getElementById('expenseBody');
+  const tr=document.createElement('tr');
+  tr.id='row-'+rowCount;
+  const typeOpts=Object.keys(GL_MAP).map(k=>`<option value="${k}">${k}</option>`).join('');
+  tr.innerHTML=`
+    <td style="font-weight:600;color:var(--muted);text-align:center">${rowCount}</td>
+    <td><input type="date" style="width:130px" onchange="recalcRow(${rowCount})"></td>
+    <td><select onchange="updateGL(${rowCount})" style="width:175px"><option value="">— Select —</option>${typeOpts}</select></td>
+    <td id="gl-${rowCount}" style="min-width:180px"><span style="color:var(--muted);font-size:11px">Auto-derived</span></td>
+    <td><input type="text" placeholder="Description" style="width:140px" onchange="recalcRow(${rowCount})"></td>
+    <td><input type="number" min="1" value="1" style="width:55px;text-align:center" id="qty-${rowCount}" onchange="recalcRow(${rowCount})"></td>
+    <td><input type="number" min="0" placeholder="0.00" style="width:85px;text-align:right" id="rate-${rowCount}" onchange="recalcRow(${rowCount})"></td>
+    <td style="font-weight:600;text-align:right;white-space:nowrap"><span id="amt-${rowCount}">₹0</span></td>
+    <td><select style="width:70px"><option>Yes</option><option>No</option><option>N/A</option></select></td>
+    <td id="status-${rowCount}"><span class="field-badge badge-auto"><i class="ti ti-check" style="font-size:11px"></i> Within limit</span></td>
+    <td><button onclick="removeRow(${rowCount})" style="background:none;border:none;cursor:pointer;color:var(--muted);font-size:17px;padding:2px 6px" title="Remove row"><i class="ti ti-trash"></i></button></td>`;
+  tbody.appendChild(tr);
+}
+
+function updateGL(rowId){
+  const sel=document.querySelector('#row-'+rowId+' select');
+  const type=sel.value;
+  const glCell=document.getElementById('gl-'+rowId);
+  glCell.innerHTML=type&&GL_MAP[type]
+    ?`<span class="gl-chip">${GL_MAP[type]}</span>`
+    :`<span style="color:var(--muted);font-size:11px">Auto-derived</span>`;
+  recalcRow(rowId);
+}
+
+function recalcRow(rowId){
+  const qty=parseFloat(document.getElementById('qty-'+rowId).value)||0;
+  const rate=parseFloat(document.getElementById('rate-'+rowId).value)||0;
+  const amt=qty*rate;
+  document.getElementById('amt-'+rowId).textContent='₹'+Math.round(amt).toLocaleString('en-IN');
+  checkRowPolicy(rowId,amt);
+  recalcTotals();
+}
+
+function checkRowPolicy(rowId,amt){
+  const statusEl=document.getElementById('status-'+rowId);
+  if(!currentEmp||amt===0){
+    statusEl.innerHTML=`<span class="field-badge badge-auto"><i class="ti ti-check" style="font-size:11px"></i> Within limit</span>`;
+    return;
+  }
+  const sel=document.querySelector('#row-'+rowId+' select');
+  const type=sel.value;
+  const dest=document.getElementById('destCity').value;
+  let limit=null;
+  if(type==='Hotel / Accommodation'){
+    if(dest==='international')limit=currentEmp.policy.hotel.intl;
+    else if(dest==='domestic_metro')limit=currentEmp.policy.hotel.metro;
+    else if(dest==='domestic_non')limit=currentEmp.policy.hotel.nonMetro;
+  } else if(type==='Daily Allowance (DA)'){
+    if(dest==='international')limit=currentEmp.policy.da.intl;
+    else if(dest==='domestic_metro')limit=currentEmp.policy.da.metro;
+    else if(dest==='domestic_non')limit=currentEmp.policy.da.nonMetro;
+  }
+  if(limit!==null&&amt>limit){
+    statusEl.innerHTML=`<span class="field-badge badge-err"><i class="ti ti-alert-triangle" style="font-size:11px"></i> Exceeds ₹${limit.toLocaleString('en-IN')}</span>`;
+  } else {
+    statusEl.innerHTML=`<span class="field-badge badge-auto"><i class="ti ti-check" style="font-size:11px"></i> Within limit</span>`;
+  }
+}
+
+function revalidateAllRows(){
+  document.querySelectorAll('[id^="amt-"]').forEach(el=>{
+    const rid=el.id.replace('amt-','');
+    const amt=parseFloat(el.textContent.replace(/[₹,]/g,''))||0;
+    checkRowPolicy(rid,amt);
+  });
+  recalcTotals();
+}
+
+function recalcTotals(){
+  let total=0,over=0;
+  document.querySelectorAll('[id^="amt-"]').forEach(el=>{
+    total+=parseFloat(el.textContent.replace(/[₹,]/g,''))||0;
+  });
+  document.querySelectorAll('[id^="status-"]').forEach(el=>{
+    if(el.querySelector('.badge-err')){
+      const rid=el.id.replace('status-','');
+      const qty=parseFloat(document.getElementById('qty-'+rid)?.value)||0;
+      const rate=parseFloat(document.getElementById('rate-'+rid)?.value)||0;
+      over+=qty*rate;
+    }
+  });
+  const eligible=total-over;
+  document.getElementById('totalClaimed').textContent='₹'+Math.round(total).toLocaleString('en-IN');
+  document.getElementById('totalEligible').textContent='₹'+Math.round(eligible).toLocaleString('en-IN');
+  document.getElementById('totalOver').textContent='₹'+Math.round(over).toLocaleString('en-IN');
+  document.getElementById('netPayable').textContent='₹'+Math.round(total).toLocaleString('en-IN');
+  hasOverLimit=over>0;
+  document.getElementById('justificationArea').className='justification-area'+(hasOverLimit?' show':'');
+  document.getElementById('wfOverLimit').style.opacity=hasOverLimit?'1':'0.35';
+  const wfIcon=document.querySelector('#wfOverLimit .wf-icon');
+  if(wfIcon)wfIcon.className='wf-icon '+(hasOverLimit?'pending':'skip');
+}
+
+function removeRow(rowId){
+  const r=document.getElementById('row-'+rowId);
+  if(r)r.remove();
+  recalcTotals();
+}
+
+function toggleSection(id){
+  const sec=document.getElementById(id);
+  sec.classList.toggle('section-collapsed');
+}
+
+function saveDraft(){
+  const pill=document.getElementById('statusPill');
+  pill.textContent='Draft Saved';pill.className='status-pill pill-saved';
+  setTimeout(()=>{pill.textContent='Draft';pill.className='status-pill pill-draft';},2500);
+}
+
+function updateDestination(){revalidateAllRows();}
+
+function validateAndSubmit(){
+  const panel=document.getElementById('validationPanel');
+  const items=document.getElementById('validationItems');
+  let html='';
+  const hasEmp=!!document.getElementById('empId').value;
+  const hasDesc=!!document.getElementById('tripDesc').value.trim();
+  const lineCount=document.querySelectorAll('[id^="amt-"]').length;
+  const hasAuth=!!document.getElementById('approvalAuthority').value;
+  const hasJust=!!document.getElementById('justification').value.trim();
+
+  html+=hasEmp
+    ?`<div class="val-item val-ok"><i class="ti ti-check-circle"></i> Employee details fetched from HRMS</div>`
+    :`<div class="val-item val-err"><i class="ti ti-x-circle"></i> Employee ID not selected</div>`;
+  html+=hasDesc
+    ?`<div class="val-item val-ok"><i class="ti ti-check-circle"></i> Trip description provided</div>`
+    :`<div class="val-item val-warn"><i class="ti ti-alert-circle"></i> Trip description is blank</div>`;
+  html+=lineCount>0
+    ?`<div class="val-item val-ok"><i class="ti ti-check-circle"></i> ${lineCount} expense line(s) added</div>`
+    :`<div class="val-item val-err"><i class="ti ti-x-circle"></i> No expense lines added</div>`;
+  if(hasOverLimit){
+    html+=!hasAuth?`<div class="val-item val-err"><i class="ti ti-x-circle"></i> Approval authority must be selected for over-limit items</div>`:
+      `<div class="val-item val-ok"><i class="ti ti-check-circle"></i> Approval authority selected</div>`;
+    html+=!hasJust?`<div class="val-item val-err"><i class="ti ti-x-circle"></i> Business justification is mandatory for over-limit expenses</div>`:
+      `<div class="val-item val-ok"><i class="ti ti-check-circle"></i> Justification provided</div>`;
+    html+=`<div class="val-item val-warn"><i class="ti ti-alert-circle"></i> Claim will route: Employee → Reporting Manager → HOD/CFO → Finance</div>`;
+  } else if(lineCount>0){
+    html+=`<div class="val-item val-ok"><i class="ti ti-check-circle"></i> All expenses within policy — standard approval workflow applies</div>`;
+  }
+  html+=`<div class="val-item val-ok"><i class="ti ti-check-circle"></i> GL accounts auto-derived for all expense types</div>`;
+  html+=`<div class="val-item val-ok"><i class="ti ti-check-circle"></i> On full approval, AP invoice auto-created in "Never Validated" status</div>`;
+  items.innerHTML=html;
+  panel.className='validation-panel show';
+  panel.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function submitClaim(){
+  if(!document.getElementById('empId').value){alert('Please select an employee first.');return;}
+  const pill=document.getElementById('statusPill');
+  pill.textContent='Submitted';pill.className='status-pill pill-submitted';
+  document.getElementById('submitBtn').disabled=true;
+  document.getElementById('submitBtn').style.opacity='0.6';
+  document.querySelector('.wf-node:first-child .wf-icon').className='wf-icon done';
+  alert('Expense claim submitted successfully!\n\nClaim No: '+document.getElementById('claimNo').textContent+'\nRouted to: '+document.getElementById('reportingMgr').value+' for approval.');
+}
+
+function handleFiles(input){
+  const list=document.getElementById('fileList');
+  let html='<strong style="font-size:11px;color:var(--muted)">Attached files:</strong><ul style="margin-top:6px;padding-left:18px">';
+  Array.from(input.files).forEach(f=>{
+    html+=`<li style="font-size:12px;padding:2px 0">${f.name} <span style="color:var(--muted)">(${(f.size/1024).toFixed(0)} KB)</span></li>`;
+  });
+  html+='</ul>';
+  list.innerHTML=html;
+}
+
+// Initialize with 2 rows
+addExpenseRow();
+addExpenseRow();
+</script>
+</body>
+</html>
